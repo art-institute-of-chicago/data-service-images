@@ -61,7 +61,8 @@ class ImagesDownload extends AbstractCommand
                     $this->info( "Image #{$n}: ID {$id} - downloaded" );
                 }
                 catch (\Exception $e) {
-                    $this->warn( "Image #{$n}: ID {$id} - not found" );
+                    // TODO: Avoid catching non-HTTP exceptions?
+                    $this->warn( "Image #{$n}: ID {$id} - not found - " . $url );
                     return;
                 }
 
