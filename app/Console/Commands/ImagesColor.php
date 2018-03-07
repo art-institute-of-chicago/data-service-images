@@ -51,7 +51,8 @@ class ImagesColor extends AbstractCommand
 
         if( !$this->option('force') ) {
 
-            $processed = Image::select('lake_guid')->whereNotNull('metadata->color')->get()->pluck('lake_guid');
+            // TODO: Avoid hardcoding the `id` field. Use singleton and getKeyName().
+            $processed = Image::select('id')->whereNotNull('metadata->color')->get()->pluck('id');
 
             $this->info( $processed->count() . ' images have already been processed...' );
 

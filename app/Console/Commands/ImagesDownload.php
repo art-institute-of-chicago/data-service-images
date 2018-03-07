@@ -36,8 +36,9 @@ class ImagesDownload extends AbstractCommand
         while( $skip < $count )
         {
 
+            // TODO: Avoid hardcoding the `id` field. Use singleton and getKeyName().
             // https://stackoverflow.com/questions/35643192/laravel-eloquent-limit-and-offset
-            $ids = Image::skip( $skip )->take( $take )->get(['lake_guid'])->pluck('lake_guid');
+            $ids = Image::skip( $skip )->take( $take )->get(['id'])->pluck('id');
 
             $ids->each( function( $id, $i ) use ( $skip ) {
 
