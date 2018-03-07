@@ -6,10 +6,10 @@ use App\Image;
 
 use League\Csv\Writer;
 
-class ImagesExport extends AbstractCommand
+class ImagesCsvExport extends AbstractCommand
 {
 
-    protected $signature = 'images:export';
+    protected $signature = 'images:csv-export';
 
     protected $description = 'Export CSV for image metadata';
 

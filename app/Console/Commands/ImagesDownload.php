@@ -36,8 +36,9 @@ class ImagesDownload extends AbstractCommand
         while( $skip < $count )
         {
 
+            // TODO: Avoid hardcoding the `id` field. Use singleton and getKeyName().
             // https://stackoverflow.com/questions/35643192/laravel-eloquent-limit-and-offset
-            $ids = Image::skip( $skip )->take( $take )->get(['lake_guid'])->pluck('lake_guid');
+            $ids = Image::skip( $skip )->take( $take )->get(['id'])->pluck('id');
 
             $ids->each( function( $id, $i ) use ( $skip ) {
 
@@ -60,7 +61,8 @@ class ImagesDownload extends AbstractCommand
                     $this->info( "Image #{$n}: ID {$id} - downloaded" );
                 }
                 catch (\Exception $e) {
-                    $this->warn( "Image #{$n}: ID {$id} - not found" );
+                    // TODO: Avoid catching non-HTTP exceptions?
+                    $this->warn( "Image #{$n}: ID {$id} - not found - " . $url );
                     return;
                 }
 
@@ -76,17 +78,6 @@ class ImagesDownload extends AbstractCommand
             }
 
         }
-
-    }
-
-    private function fetch( $file ) {
-
-        if( !$contents = @file_get_contents( $file ) )
-        {
-            throw new \Exception('Load Failed');
-        }
-
-        return $contents;
 
     }
 

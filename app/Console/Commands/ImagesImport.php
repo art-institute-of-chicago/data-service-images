@@ -4,89 +4,32 @@ namespace App\Console\Commands;
 
 use App\Image;
 
-use League\Csv\Reader;
-
 class ImagesImport extends AbstractCommand
 {
 
     protected $signature = 'images:import';
 
-    protected $description = 'Import CSV for image metadata';
-
-    protected $filename = 'images.csv';
+    protected $description = 'Imports core image data from the data-aggregator';
 
     public function handle()
     {
 
         ini_set("memory_limit", "-1");
 
-        $path = storage_path() . '/app/' . $this->filename;
-
-        $csv = Reader::createFromPath( $path, 'r' );
-        $csv->setHeaderOffset(0);
-
-        foreach( $csv->getRecords() as $row )
-        {
-
-            // Save to Image metadata
-            $image = Image::find( $row['id'] );
-
-            // Image not found
-            if( !$image ) {
-                continue;
-            }
-
-            $image->metadata = $this->getMetadata( $image, $row );
-
-            $image->save();
-
-            // Output for reference
-            $this->info( $image->getKey() . ' = ' . json_encode( $image->metadata ) );
-
-        }
+        $this->import( Image::class, 'images' );
 
     }
 
-    private function getMetadata( $image, $row )
+    protected function save( $datum, $model )
     {
 
-        $metadata = $image->metadata ?? (object) [];
+        // TODO: Make inbound transformer report the id key sourceside?
+        $image = $model::findOrNew( $datum->id );
 
-        $metadata->color = $this->getColor( $metadata, $row );
-        // $metadata->fingerprint = $this->getFingerprint( $metadata, $row );
+        $image->id = $datum->id;
+        $image->title = $datum->title;
 
-        // $metadata->mse = $row['mse'] ?? null;
-
-        return $metadata;
-
-    }
-
-    private function getColor( $metadata, $row )
-    {
-
-        $color = $metadata->color ?? (object) [];
-
-        $color->h = (int) $row['h'] ?? null;
-        $color->s = (int) $row['s'] ?? null;
-        $color->l = (int) $row['l'] ?? null;
-        $color->population = (int) $row['population'] ?? null;
-        $color->percentage = (float) $row['percentage'] ?? null;
-
-        return $color;
-
-    }
-
-    private function getFingerprint( $metadata, $row )
-    {
-
-        $fingerprint = $metadata->fingerprint ?? (object) [];
-
-        $fingerprint->ahash = $row['ahash'] ?? null;
-        $fingerprint->dhash = $row['dhash'] ?? null;
-        $fingerprint->phash = $row['phash'] ?? null;
-        $fingerprint->whash = $row['whash'] ?? null;
-
-        return $fingerprint;
+        $image->save();
 
     }
 
