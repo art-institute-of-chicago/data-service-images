@@ -14,7 +14,8 @@
         "php": ">=5.6.4",
         "laravel/framework": "^5.5",
         "aic/data-hub-foundation": "dev-master#dd91c35745b6b61607b0f558dbba984bc0af96ca",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "marijnvdwerf/material-palette": "^1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
