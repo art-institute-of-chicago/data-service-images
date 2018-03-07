@@ -52,7 +52,7 @@ class ImagesColor extends AbstractCommand
         if( !$this->option('force') ) {
 
             // TODO: Avoid hardcoding the `id` field. Use singleton and getKeyName().
-            $processed = Image::select('id')->whereNotNull('metadata->color')->get()->pluck('id');
+            $processed = Image::select('id')->whereNotNull('color')->get()->pluck('id');
 
             $this->info( $processed->count() . ' images have already been processed...' );
 
@@ -146,10 +146,8 @@ class ImagesColor extends AbstractCommand
                 continue;
             }
 
-            $metadata = $image->metadata ?? (object) [];
-            $metadata->color = $out;
-
-            $image->metadata = $metadata;
+            // Save the generated color to database
+            $image->color = $out;
             $image->save();
 
             $this->info( $this->prefix( $i, $total, $id ) . json_encode( $out ) );

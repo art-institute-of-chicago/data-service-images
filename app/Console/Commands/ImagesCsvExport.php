@@ -27,9 +27,9 @@ class ImagesCsvExport extends AbstractCommand
         $this->csv = Writer::createFromPath( $path, 'w' );
         $this->csv->insertOne( ['id', 'h', 's', 'l', 'population', 'percentage'] );
 
-        $images = Image::whereNotNull('metadata')->get();
+        $images = Image::all();
 
-        $this->info( $images->count() . ' images with metadata found.' );
+        $this->info( $images->count() . ' images found.' );
 
         // Uncomment for testing
         // $images = $images->slice( 0, 5 );
@@ -43,11 +43,11 @@ class ImagesCsvExport extends AbstractCommand
 
         $row = [
             'id' => $image->getKey(),
-            'h' => $image->metadata->color->h ?? null,
-            's' => $image->metadata->color->s ?? null,
-            'l' => $image->metadata->color->l ?? null,
-            'population' => $image->metadata->color->population ?? null,
-            'percentage' => $image->metadata->color->percentage ?? null,
+            'h' => $image->color->h ?? null,
+            's' => $image->color->s ?? null,
+            'l' => $image->color->l ?? null,
+            'population' => $image->color->population ?? null,
+            'percentage' => $image->color->percentage ?? null,
         ];
 
         $this->csv->insertOne( $row );

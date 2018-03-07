@@ -13,6 +13,7 @@ class ImageTransformer extends AbstractTransformer
         $data = [
             'id' => $image->id,
             'title' => $image->title,
+            'color' => $image->color,
         ];
 
         // Enables ?fields= functionality
