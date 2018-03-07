@@ -79,15 +79,4 @@ class ImagesDownload extends AbstractCommand
 
     }
 
-    private function fetch( $file ) {
-
-        if( !$contents = @file_get_contents( $file ) )
-        {
-            throw new \Exception('Load Failed');
-        }
-
-        return $contents;
-
-    }
-
 }

@@ -7,7 +7,16 @@ use Aic\Hub\Foundation\AbstractCommand as BaseCommand;
 abstract class AbstractCommand extends BaseCommand
 {
 
-    // Put any custom shared methods here
+    private function fetch( $file, $decode = false ) {
+
+        if( !$contents = @file_get_contents( $file ) )
+        {
+            throw new \Exception('Load Failed');
+        }
+
+        return $decode ? json_decode( $contents ) : $contents;
+
+    }
 
 }
 
