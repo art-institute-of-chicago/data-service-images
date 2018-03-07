@@ -36,35 +36,26 @@ class ImagesCsvImport extends AbstractCommand
                 continue;
             }
 
-            $image->metadata = $this->getMetadata( $image, $row );
+            // TODO: Potential items from the Python implementation:
+            // $image->fingerprint = $this->getFingerprint( $image, $row );
+            // $image->mse = $row['mse'] ?? null;
+
+            // For now, just export the dominant color:
+            $image->color = $this->getColor( $image, $row );
 
             $image->save();
 
             // Output for reference
-            $this->info( $image->getKey() . ' = ' . json_encode( $image->metadata ) );
+            $this->info( $image->getKey() . ' = ' . json_encode( $image->color ) );
 
         }
 
     }
 
-    private function getMetadata( $image, $row )
+    private function getColor( $image, $row )
     {
 
-        $metadata = $image->metadata ?? (object) [];
-
-        $metadata->color = $this->getColor( $metadata, $row );
-        // $metadata->fingerprint = $this->getFingerprint( $metadata, $row );
-
-        // $metadata->mse = $row['mse'] ?? null;
-
-        return $metadata;
-
-    }
-
-    private function getColor( $metadata, $row )
-    {
-
-        $color = $metadata->color ?? (object) [];
+        $color = $image->color ?? (object) [];
 
         $color->h = (int) $row['h'] ?? null;
         $color->s = (int) $row['s'] ?? null;
@@ -76,10 +67,10 @@ class ImagesCsvImport extends AbstractCommand
 
     }
 
-    private function getFingerprint( $metadata, $row )
+    private function getFingerprint( $image, $row )
     {
 
-        $fingerprint = $metadata->fingerprint ?? (object) [];
+        $fingerprint = $image->fingerprint ?? (object) [];
 
         $fingerprint->ahash = $row['ahash'] ?? null;
         $fingerprint->dhash = $row['dhash'] ?? null;
