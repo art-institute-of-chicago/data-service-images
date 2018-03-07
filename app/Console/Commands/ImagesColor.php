@@ -9,7 +9,7 @@ use marijnvdwerf\palette\Palette;
 
 use App\Image;
 
-class ImagesColor extends Command
+class ImagesColor extends AbstractCommand
 {
 
     protected $signature = "images:color
