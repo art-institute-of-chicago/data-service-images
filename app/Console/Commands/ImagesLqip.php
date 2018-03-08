@@ -16,7 +16,8 @@ class ImagesLqip extends AbstractCommand
 
         ini_set("memory_limit", "-1");
 
-        $images = Image::all();
+        // For now, only target images that don't have an LQIP
+        $images = Image::whereNull('lqip');
 
         $images->each( function( $image, $i ) {
 
@@ -35,6 +36,13 @@ class ImagesLqip extends AbstractCommand
 
             // Run the command and grab its output
             $lqip = exec( $cmd );
+
+            // Skip if the $lquip is blank
+            if( empty($lqip) )
+            {
+                $this->warn( $i . ' - ' . $image->id . ' - ' . 'Cannot create LQIP' );
+                return null;
+            }
 
             // Remove data:image/gif;base64,
             // $lqip = substr( $lqip, 22 );
