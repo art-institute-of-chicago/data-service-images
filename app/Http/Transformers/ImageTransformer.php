@@ -13,6 +13,8 @@ class ImageTransformer extends AbstractTransformer
         $data = [
             'id' => $image->id,
             'title' => $image->title,
+            'width' => $image->width,
+            'height' => $image->height,
             'lqip' => $image->lqip,
             'color' => $image->color,
         ];
