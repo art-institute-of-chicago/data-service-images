@@ -17,7 +17,8 @@
         "laravel/tinker": "^1.0",
         "marijnvdwerf/material-palette": "^1.2",
         "league/csv": "^9.1",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "laravel/horizon": "^1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
