@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Behaviors\ImportsData;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,5 +14,6 @@ abstract class AbstractJob implements ShouldQueue
 {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use ImportsData;
 
 }
