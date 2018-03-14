@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Image;
-
-use Illuminate\Support\Facades\Storage;
+use App\Jobs\JsonDownload;
 
 class ImagesJsonDownload extends AbstractCommand
 {
@@ -18,34 +17,15 @@ class ImagesJsonDownload extends AbstractCommand
 
         ini_set("memory_limit", "-1");
 
-        $images = Image::all('id');
+        // Uncomment for real work
+        // $images = Image::all('id');
+
+        // Added for testing
+        $images = Image::take(5)->get(['id']);
 
         $images->each( function( $image, $i ) {
 
-            $id = $image->id;
-
-            $file = "info/{$id}.json";
-            $url = env('IIIF_URL') . "/{$id}/info.json";
-
-            // Check if file exists
-            $exists = Storage::exists( $file );
-
-            if( $exists )
-            {
-                $this->warn( "Image JSON #{$i}: ID {$id} - already exists" );
-                return;
-            }
-
-            try {
-                $contents = $this->fetch( $url );
-                Storage::put( $file, $contents);
-                $this->info( "Image JSON #{$i}: ID {$id} - downloaded" );
-            }
-            catch (\Exception $e) {
-                // TODO: Avoid catching non-HTTP exceptions?
-                $this->warn( "Image JSON #{$i}: ID {$id} - not found - " . $url );
-                return;
-            }
+            JsonDownload::dispatch( $image, $i );
 
         });
 
