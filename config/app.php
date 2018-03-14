@@ -64,6 +64,11 @@ return [
         Aic\Hub\Foundation\ResourceServiceProvider::class,
         Aic\Hub\Foundation\RouteServiceProvider::class,
 
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\QueueServiceProvider::class,
+
     ],
 
     /*
