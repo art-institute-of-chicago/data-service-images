@@ -15,40 +15,32 @@ class ImagesJsonDownload extends AbstractCommand
 
     public function handle()
     {
+        // Only target images that don't have dimensions yet
+        $images = Image::whereNull('width')->orWhereNull('height');
 
-        ini_set("memory_limit", "-1");
+        foreach ($images->cursor(['id']) as $image)
+        {
+            $file = "info/{$image->id}.json";
+            $url = env('IIIF_URL') . "/{$image->id}/info.json";
 
-        $images = Image::all('id');
-
-        $images->each( function( $image, $i ) {
-
-            $id = $image->id;
-
-            $file = "info/{$id}.json";
-            $url = env('IIIF_URL') . "/{$id}/info.json";
-
-            // Check if file exists
-            $exists = Storage::exists( $file );
-
-            if( $exists )
+            if (Storage::exists($file))
             {
-                $this->warn( "Image JSON #{$i}: ID {$id} - already exists" );
-                return;
+                $this->warn("{$image->id} - already exists");
+                continue;
             }
 
             try {
-                $contents = $this->fetch( $url );
-                Storage::put( $file, $contents);
-                $this->info( "Image JSON #{$i}: ID {$id} - downloaded" );
+                $contents = $this->fetch($url);
+                Storage::put($file, $contents);
+                $this->info("{$image->id} - downloaded");
+                sleep(1);
             }
             catch (\Exception $e) {
                 // TODO: Avoid catching non-HTTP exceptions?
-                $this->warn( "Image JSON #{$i}: ID {$id} - not found - " . $url );
-                return;
+                $this->warn("{$image->id} - not found - {$url}");
+                continue;
             }
-
-        });
-
+        }
     }
 
 }
