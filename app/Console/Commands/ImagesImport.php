@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Image;
+use Illuminate\Support\Facades\DB;
 
 class ImagesImport extends AbstractCommand
 {
@@ -11,26 +11,59 @@ class ImagesImport extends AbstractCommand
 
     protected $description = 'Imports core image data from the data-aggregator';
 
+    protected $chunkSize = 500;
+
+    protected $urlFormat;
+
     public function handle()
     {
+        // Prep URL $format for sprintf calls
+        $this->urlFormat = env('API_URL') . '/images?' . urldecode(http_build_query([
+            'page' => '%d',
+            'limit' => '%d',
+            'fields' => implode(',', [
+                'id',
+                'title',
+                'width',
+                'height',
+                'lqip',
+                'color',
+            ]),
+        ]));
 
-        ini_set("memory_limit", "-1");
+        // Query for the first page + get total
+        $json = $this->query(1, 0);
 
-        $this->import( Image::class, 'images' );
+        // Assumes the dataservice has standardized pagination
+        $total = $json->pagination->total;
+        $totalPages = ceil($total/$this->chunkSize);
 
+        $bar = $this->output->createProgressBar($total);
+
+        for ($currentPage = 1; $currentPage <= $totalPages; $currentPage++)
+        {
+            $json = $this->query($currentPage, $this->chunkSize);
+
+            // Encode any stdClass to strings
+            $data = array_map(function($datum) {
+                return array_map(function($value) {
+                    return is_object($value) ? json_encode($value) : $value;
+                }, (array) $datum);
+            }, $json->data);
+
+            // https://gist.github.com/VinceG/0fb570925748ab35bc53f2a798cb517c
+            // insertUpdate needs more work to be suitable for batch use
+            DB::table('images')->insertIgnore($data);
+
+            $bar->advance(count($data));
+        }
+
+        $bar->finish();
+        $this->output->newLine(1);
     }
 
-    protected function save( $datum, $model )
+    protected function query($page, $limit)
     {
-
-        // TODO: Make inbound transformer report the id key sourceside?
-        $image = $model::findOrNew( $datum->id );
-
-        $image->id = $datum->id;
-        $image->title = $datum->title;
-
-        $image->save();
-
+        return $this->fetch(sprintf($this->urlFormat, $page, $limit), true);
     }
-
 }
