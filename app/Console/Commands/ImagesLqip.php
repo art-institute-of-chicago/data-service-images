@@ -13,35 +13,39 @@ class ImagesLqip extends AbstractCommand
 
     public function handle()
     {
-
-        ini_set("memory_limit", "-1");
-
         // For now, only target images that don't have an LQIP
         $images = Image::whereNull('lqip');
 
-        $images->each( function( $image, $i ) {
-
-            // For now, skip the image if it has an lqip
-            if( $image->lqip )
+        foreach ($images->cursor() as $image)
+        {
+            // Skip the image if it has an lqip
+            if ($image->lqip)
             {
-                $this->warn( $i . ' - ' . $image->id . ' - ' . 'Already has LQIP' );
-                return null;
+                $this->warn($image->id . ' - ' . 'Already has LQIP');
+                continue;
             }
 
             // Get the file using the id
-            $source =  storage_path() . '/app/' . "images/{$image->id}.jpg";
+            $source = storage_path() . "/app/images/{$image->id}.jpg";
+
+            // Skip the image if its file doesn't exist
+            if (!file_exists($source))
+            {
+                $this->warn($image->id . ' - ' . 'File not found');
+                continue;
+            }
 
             // Generate an Imagemagick command
-            $cmd = sprintf( 'convert "%s" -resize x5 inline:gif:-', $source );
+            $cmd = sprintf('convert "%s" -resize x5 inline:gif:-', $source);
 
             // Run the command and grab its output
-            $lqip = exec( $cmd );
+            $lqip = exec($cmd);
 
             // Skip if the $lquip is blank
-            if( empty($lqip) )
+            if (empty($lqip))
             {
-                $this->warn( $i . ' - ' . $image->id . ' - ' . 'Cannot create LQIP' );
-                return null;
+                $this->warn($image->id . ' - ' . 'Cannot create LQIP');
+                continue;
             }
 
             // Remove data:image/gif;base64,
@@ -54,10 +58,10 @@ class ImagesLqip extends AbstractCommand
             $image->lqip = $lqip;
             $image->save();
 
-            $this->info( $i . ' - ' . $image->id . ' - ' . 'Added LQIP' );
+            $this->info($image->id . ' - ' . 'Added LQIP');
+        }
 
-        });
-
+        $this->info($images->count() . ' image records processed.');
     }
 
 }
