@@ -15,8 +15,13 @@ class InfoImport extends AbstractCommand
 
     public function handle()
     {
+        // Only target images whose info.json have been downloaded
+        $images = Image::whereNotNull('info_downloaded_at');
+
         // Only target images that don't have dimensions yet
-        $images = Image::whereNull('width')->orWhereNull('height');
+        $images = $images->where(function($query) {
+            $query->whereNull('width')->orWhereNull('height');
+        });
 
         foreach ($images->cursor(['id']) as $image)
         {

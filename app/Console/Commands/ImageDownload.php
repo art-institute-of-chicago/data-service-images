@@ -17,6 +17,7 @@ class ImageDownload extends AbstractCommand
 
     public function handle()
     {
+        // TODO: Update image_attempted_at and image_downloaded_at
 
         ini_set("memory_limit", "-1");
 
