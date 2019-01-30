@@ -22,19 +22,19 @@ composer install -d "$DIR_ROOT"
 php "$DIR_ROOT/artisan" migrate --step
 
 # Download image metadata from data-aggregator
-php "$DIR_ROOT/artisan" images:import
+php "$DIR_ROOT/artisan" api:import
 
 # Download actual image files (~20 GB)
-php "$DIR_ROOT/artisan" images:download
+php "$DIR_ROOT/artisan" image:download
 
 # Download info.json files from IIIF
-php "$DIR_ROOT/artisan" images:json-download
+php "$DIR_ROOT/artisan" info:download
 
 # Imports info.json files into database
-php "$DIR_ROOT/artisan" images:json-import
+php "$DIR_ROOT/artisan" info:import
 
 # Calculate dominant color for images
-php "$DIR_ROOT/artisan" images:color
+php "$DIR_ROOT/artisan" image:color
 
 # Calculate low-quality image placeholders (LQIPs)
-php "$DIR_ROOT/artisan" images:lqip
+php "$DIR_ROOT/artisan" image:lqip

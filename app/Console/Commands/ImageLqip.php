@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use App\Image;
 
-class ImagesLqip extends AbstractCommand
+class ImageLqip extends AbstractCommand
 {
 
-    protected $signature = 'images:lqip';
+    protected $signature = 'image:lqip';
 
     protected $description = 'Generates low quality image placeholders (LQIPs)';
 

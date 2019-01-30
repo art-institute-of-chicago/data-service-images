@@ -6,10 +6,10 @@ use App\Image;
 
 use Illuminate\Support\Facades\Storage;
 
-class ImagesDownload extends AbstractCommand
+class ImageDownload extends AbstractCommand
 {
 
-    protected $signature = 'images:download
+    protected $signature = 'image:download
                             {--skip=? : Manual offset for downloading}
                             {--forget : Do not track offset for later}';
 

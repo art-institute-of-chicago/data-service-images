@@ -6,10 +6,10 @@ use App\Image;
 
 use Illuminate\Support\Facades\Storage;
 
-class ImagesJsonImport extends AbstractCommand
+class InfoImport extends AbstractCommand
 {
 
-    protected $signature = 'images:json-import';
+    protected $signature = 'info:import';
 
     protected $description = 'Imports info.json files downloaded from IIIF';
 

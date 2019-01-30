@@ -6,10 +6,10 @@ use App\Image;
 
 use League\Csv\Reader;
 
-class ImagesCsvImport extends AbstractCommand
+class PythonImport extends AbstractCommand
 {
 
-    protected $signature = 'images:csv-import';
+    protected $signature = 'python:import';
 
     protected $description = 'Import CSV for image metadata';
 

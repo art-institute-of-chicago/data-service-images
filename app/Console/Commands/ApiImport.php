@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Support\Facades\DB;
 
-class ImagesImport extends AbstractCommand
+class ApiImport extends AbstractCommand
 {
 
-    protected $signature = 'images:import';
+    protected $signature = 'api:import';
 
     protected $description = 'Imports core image data from the data-aggregator';
 

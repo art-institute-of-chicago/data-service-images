@@ -9,10 +9,10 @@ use marijnvdwerf\palette\Palette;
 
 use App\Image;
 
-class ImagesColor extends AbstractCommand
+class ImageColor extends AbstractCommand
 {
 
-    protected $signature = 'images:color';
+    protected $signature = 'image:color';
 
     protected $description = 'Determine dominant color for each image';
 

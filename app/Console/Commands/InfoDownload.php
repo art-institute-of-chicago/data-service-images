@@ -6,10 +6,10 @@ use App\Image;
 
 use Illuminate\Support\Facades\Storage;
 
-class ImagesJsonDownload extends AbstractCommand
+class InfoDownload extends AbstractCommand
 {
 
-    protected $signature = 'images:json-download';
+    protected $signature = 'info:download';
 
     protected $description = 'Downloads info.json files from IIIF';
 
