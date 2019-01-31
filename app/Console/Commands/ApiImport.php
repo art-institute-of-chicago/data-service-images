@@ -64,6 +64,6 @@ class ApiImport extends AbstractCommand
 
     protected function query($page, $limit)
     {
-        return $this->fetch(sprintf($this->urlFormat, $page, $limit), true);
+        return json_decode($this->fetch(sprintf($this->urlFormat, $page, $limit)));
     }
 }

@@ -39,7 +39,7 @@ class InfoDownload extends AbstractCommand
 
             try
             {
-                $contents = $this->fetch($url);
+                $contents = $this->fetch($url, $headers);
                 Storage::put($file, $contents);
 
                 $image->info_downloaded_at = Carbon::now();
@@ -47,7 +47,11 @@ class InfoDownload extends AbstractCommand
 
                 $this->info("{$image->id} - downloaded");
 
-                usleep(500000); // Half a second
+                // Give the IIIF server a rest
+                if (!in_array('X-Cache: Hit from cloudfront', $headers))
+                {
+                    usleep(500000); // Half a second
+                }
             }
             catch (\Exception $e)
             {
