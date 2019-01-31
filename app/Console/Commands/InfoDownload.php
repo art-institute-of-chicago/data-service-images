@@ -23,6 +23,11 @@ class InfoDownload extends AbstractCommand
             $query->whereNull('width')->orWhereNull('height');
         });
 
+        if (!$this->confirm($images->count() . ' info files will be downloaded. Proceed?'))
+        {
+            return;
+        }
+
         foreach ($images->cursor(['id']) as $image)
         {
             $file = "info/{$image->id}.json";

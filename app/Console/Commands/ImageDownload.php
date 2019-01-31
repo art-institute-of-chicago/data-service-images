@@ -15,7 +15,12 @@ class ImageDownload extends AbstractCommand
 
     public function handle()
     {
-        $images = Image::whereNull('image_downloaded_at');
+        $images = Image::whereNull('image_attempted_at');
+
+        if (!$this->confirm($images->count() . ' images will be downloaded. Proceed?'))
+        {
+            return;
+        }
 
         foreach ($images->cursor(['id']) as $image)
         {
