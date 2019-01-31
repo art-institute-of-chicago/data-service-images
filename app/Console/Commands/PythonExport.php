@@ -11,49 +11,33 @@ class PythonExport extends AbstractCommand
 
     protected $signature = 'python:export';
 
-    protected $description = 'Export CSV for image metadata';
-
-    protected $filename = 'images.csv';
-
-    protected $csv;
+    protected $description = 'Export CSV of image ids for Python processing';
 
     public function handle()
     {
+        $path = storage_path() . '/app/python-input.csv';
 
-        ini_set("memory_limit", "-1");
+        $csv = Writer::createFromPath($path, 'w');
 
-        $path = storage_path() . '/app/' . $this->filename;
+        $csv->insertOne([
+            'id',
+            // 'colorfullness',
+        ]);
 
-        $this->csv = Writer::createFromPath( $path, 'w' );
-        $this->csv->insertOne( ['id', 'h', 's', 'l', 'population', 'percentage'] );
+        $images = Image::query();
+            // ->whereNull('colorfullness');
 
-        $images = Image::all();
+        foreach ($images->cursor() as $image)
+        {
+            $row = [
+                'id' => $image->id,
+                // 'colorfullness' => isset($image->colorfullness) ? null : true,
+            ];
 
-        $this->info( $images->count() . ' images found.' );
+            $csv->insertOne($row);
 
-        // Uncomment for testing
-        // $images = $images->slice( 0, 5 );
-
-        $images->map( [$this, 'getRow'] );
-
-    }
-
-    public function getRow( $image )
-    {
-
-        $row = [
-            'id' => $image->getKey(),
-            'h' => $image->color->h ?? null,
-            's' => $image->color->s ?? null,
-            'l' => $image->color->l ?? null,
-            'population' => $image->color->population ?? null,
-            'percentage' => $image->color->percentage ?? null,
-        ];
-
-        $this->csv->insertOne( $row );
-
-        $this->info( json_encode( $row ) );
-
+            $this->info(json_encode($row));
+        }
     }
 
 }
