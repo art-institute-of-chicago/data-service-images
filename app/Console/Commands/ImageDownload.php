@@ -3,83 +3,57 @@
 namespace App\Console\Commands;
 
 use App\Image;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class ImageDownload extends AbstractCommand
 {
 
-    protected $signature = 'image:download
-                            {--skip=? : Manual offset for downloading}
-                            {--forget : Do not track offset for later}';
+    protected $signature = 'image:download';
 
     protected $description = 'Downloads all images from LAKE IIIF';
 
     public function handle()
     {
-        // TODO: Update image_attempted_at and image_downloaded_at
+        $images = Image::whereNull('image_downloaded_at');
 
-        ini_set("memory_limit", "-1");
-
-        $lastSkipFile = 'lastImageSkip.txt';
-
-        // Determine our $skip from last time
-        $skip = Storage::exists( $lastSkipFile ) ? (int) Storage::get( $lastSkipFile ) : 0;
-
-        if( $this->option('skip') )
+        foreach ($images->cursor(['id']) as $image)
         {
-            $skip = (int) $this->option('skip');
-        }
+            $file = "images/{$image->id}.jpg";
+            $url = env('IIIF_URL') . "/{$image->id}/full/843,/0/default.jpg";
 
-        $count = Image::count();
-        $take = 10;
-
-        while( $skip < $count )
-        {
-
-            // TODO: Avoid hardcoding the `id` field. Use singleton and getKeyName().
-            // https://stackoverflow.com/questions/35643192/laravel-eloquent-limit-and-offset
-            $ids = Image::skip( $skip )->take( $take )->get(['id'])->pluck('id');
-
-            $ids->each( function( $id, $i ) use ( $skip ) {
-
-                $n = $i + $skip;
-                $file = "images/{$id}.jpg";
-                $url = env('IIIF_URL') . "/{$id}/full/!800,800/0/default.jpg";
-
-                // Check if file exists
-                $exists = Storage::exists( $file );
-
-                if( $exists )
-                {
-                    $this->warn( "Image #{$n}: ID {$id} - already exists" );
-                    return;
-                }
-
-                try {
-                    $contents = $this->fetch( $url );
-                    Storage::put( $file, $contents);
-                    $this->info( "Image #{$n}: ID {$id} - downloaded" );
-                }
-                catch (\Exception $e) {
-                    // TODO: Avoid catching non-HTTP exceptions?
-                    $this->warn( "Image #{$n}: ID {$id} - not found - " . $url );
-                    return;
-                }
-
-
-            });
-
-            // Advance our counter
-            $skip += $take;
-
-            if( !$this->option('forget') )
+            if (Storage::exists($file))
             {
-               Storage::put( $lastSkipFile, $skip );
+                $this->warn("{$image->id} - already exists");
+                continue;
             }
 
-        }
+            $image->image_attempted_at = Carbon::now();
+            $image->save();
 
+            try
+            {
+                $contents = $this->fetch($url);
+                Storage::put($file, $contents);
+
+                $image->image_downloaded_at = Carbon::now();
+                $image->save();
+
+                $this->info("{$image->id} - downloaded");
+
+                usleep(500000); // Half a second
+            }
+            catch (\Exception $e)
+            {
+                // TODO: Avoid catching non-HTTP exceptions?
+                $this->warn("{$image->id} - not found - {$url}");
+
+                // Update the attempt date
+                $image->save();
+
+                continue;
+            }
+        }
     }
 
 }
