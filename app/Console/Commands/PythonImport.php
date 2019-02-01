@@ -34,6 +34,7 @@ class PythonImport extends AbstractCommand
             !empty($row['dhash']) && $image->dhash = $row['dhash'];
             !empty($row['phash']) && $image->phash = $row['phash'];
             !empty($row['whash']) && $image->whash = $row['whash'];
+            !empty($row['colorfulness']) && $image->colorfulness = $row['colorfulness'];
 
             $image->save();
 

@@ -21,7 +21,14 @@ csv_output = os.path.join(dir_data, 'python-output.csv')
 file_input = open(csv_input, 'r', newline='\n', encoding='utf-8')
 file_output = open(csv_output, 'w+', newline='\n', encoding='utf-8')
 
-keys = ['id', 'ahash', 'phash', 'dhash', 'whash']
+keys = [
+    'id',
+    'ahash',
+    'phash',
+    'dhash',
+    'whash',
+    'colorfulness',
+]
 
 reader = csv.DictReader(file_input)
 writer = csv.DictWriter(file_output, fieldnames=keys)
@@ -36,6 +43,7 @@ for row in reader:
         continue
 
     ahash, phash, dhash, whash = get_image_fingerprint(jpg, row)
+    colorfulness = get_image_colorfulness(jpg, row)
 
     out = {
     	'id': row['id'],
@@ -43,6 +51,7 @@ for row in reader:
     	'phash': phash,
     	'dhash': dhash,
     	'whash': whash,
+        'colorfulness': colorfulness,
     }
 
     # Output to CSV and console

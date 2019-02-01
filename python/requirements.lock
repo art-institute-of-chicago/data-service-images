@@ -3,8 +3,10 @@
 # requirements.lock should be generated with pip freeze
 Pillow==5.2.0
 ImageHash==4.0
-## The following requirements were added by pip freeze:
 numpy==1.16.0
+opencv-python==4.0.0.21
+imutils==0.5.2
+## The following requirements were added by pip freeze:
 PyWavelets==1.0.1
 scipy==1.2.0
 six==1.12.0

@@ -1,6 +1,9 @@
 import imagehash
 
 from PIL import Image
+import numpy as np
+import imutils
+import cv2
 
 # Helper to parse CSV cells into booleans
 # https://stackoverflow.com/questions/31842424/boolean-value-of-fields-in-csv-file-in-python
@@ -35,3 +38,33 @@ def get_image_fingerprint(file, row):
     pil_img.close()
 
     return ahash, phash, dhash, whash
+
+# https://www.pyimagesearch.com/2017/06/05/computing-image-colorfulness-with-opencv-and-python/
+def get_image_colorfulness(file, row):
+    if not get_bool(row['colorfulness']):
+        return None
+
+    cv_img = cv2.imread(file)
+    cv_img = imutils.resize(cv_img, width=250)
+
+    # split the image into its respective RGB components
+    (B, G, R) = cv2.split(cv_img.astype('float'))
+
+    # compute rg = R - G
+    rg = np.absolute(R - G)
+
+    # compute yb = 0.5 * (R + G) - B
+    yb = np.absolute(0.5 * (R + G) - B)
+
+    # compute the mean and standard deviation of both `rg` and `yb`
+    (rbMean, rbStd) = (np.mean(rg), np.std(rg))
+    (ybMean, ybStd) = (np.mean(yb), np.std(yb))
+
+    # combine the mean and standard deviations
+    stdRoot = np.sqrt((rbStd ** 2) + (ybStd ** 2))
+    meanRoot = np.sqrt((rbMean ** 2) + (ybMean ** 2))
+
+    # derive the "colorfulness" metric
+    colorfulness = stdRoot + (0.3 * meanRoot)
+
+    return colorfulness

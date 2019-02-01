@@ -25,7 +25,7 @@ class PythonExport extends AbstractCommand
             'dhash',
             'phash',
             'whash',
-            // 'colorfullness',
+            'colorfulness',
         ]);
 
         // Only target images that have been downloaded
@@ -36,7 +36,8 @@ class PythonExport extends AbstractCommand
             $query->whereNull('ahash')
                 ->orWhereNull('dhash')
                 ->orWhereNull('phash')
-                ->orWhereNull('whash');
+                ->orWhereNull('whash')
+                ->orWhereNull('colorfulness');
         });
 
         if (!$this->confirm($images->count() . ' images will be exported. Proceed?'))
@@ -52,7 +53,7 @@ class PythonExport extends AbstractCommand
                 'dhash' => isset($image->dhash) ? null : true,
                 'phash' => isset($image->phash) ? null : true,
                 'whash' => isset($image->whash) ? null : true,
-                // 'colorfullness' => isset($image->colorfullness) ? null : true,
+                'colorfulness' => isset($image->colorfulness) ? null : true,
             ];
 
             $csv->insertOne($row);

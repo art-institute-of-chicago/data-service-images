@@ -13,12 +13,19 @@ class ImageTransformer extends AbstractTransformer
         $data = [
             'id' => $image->id,
             'title' => $image->title,
+
+            // From info.json
             'width' => $image->width,
             'height' => $image->height,
+
+            // From Python subservice
             'ahash' => $image->ahash,
             'phash' => $image->phash,
             'dhash' => $image->dhash,
             'whash' => $image->whash,
+            'colorfulness' => $image->colorfulness,
+
+            // From artisan commands
             'lqip' => $image->lqip,
             'color' => $image->color,
         ];
