@@ -15,6 +15,10 @@ class ImageTransformer extends AbstractTransformer
             'title' => $image->title,
             'width' => $image->width,
             'height' => $image->height,
+            'ahash' => $image->ahash,
+            'phash' => $image->phash,
+            'dhash' => $image->dhash,
+            'whash' => $image->whash,
             'lqip' => $image->lqip,
             'color' => $image->color,
         ];

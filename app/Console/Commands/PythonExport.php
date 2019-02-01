@@ -21,16 +21,37 @@ class PythonExport extends AbstractCommand
 
         $csv->insertOne([
             'id',
+            'ahash',
+            'dhash',
+            'phash',
+            'whash',
             // 'colorfullness',
         ]);
 
-        $images = Image::query();
-            // ->whereNull('colorfullness');
+        // Only target images that have been downloaded
+        $images = Image::whereNotNull('image_downloaded_at');
+
+        // Only target images that are missing fields provided by Python
+        $images = $images->where(function($query) {
+            $query->whereNull('ahash')
+                ->orWhereNull('dhash')
+                ->orWhereNull('phash')
+                ->orWhereNull('whash');
+        });
+
+        if (!$this->confirm($images->count() . ' images will be exported. Proceed?'))
+        {
+            return;
+        }
 
         foreach ($images->cursor() as $image)
         {
             $row = [
                 'id' => $image->id,
+                'ahash' => isset($image->ahash) ? null : true,
+                'dhash' => isset($image->dhash) ? null : true,
+                'phash' => isset($image->phash) ? null : true,
+                'whash' => isset($image->whash) ? null : true,
                 // 'colorfullness' => isset($image->colorfullness) ? null : true,
             ];
 

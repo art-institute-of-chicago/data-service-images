@@ -1,8 +1,11 @@
 ## Requirements
 
-This project requires the following Python packages:
+This project uses the following Python packages:
 
 1. [Pillow](https://python-pillow.org/)
+2. [ImageHash](https://github.com/JohannesBuchner/imagehash)
+
+We will describe how to install these automatically below.
 
 If you are just getting started with Python, before you do anything, I recommend installing the following programs, for workflow reasons:
 
@@ -16,14 +19,13 @@ These will work together with [pip](https://pip.pypa.io/en/stable/), which is a 
 
 Because we don't typically work with Python on our team, these instructions assume that you are setting up a Python dev environment from scratch. We'll walk through the steps to get started, with the aim of reducing potential friction down the line.
 
-We assume that you are working on macOS, which comes with Python already installed. You may want to avoid using that Python, and install a Python version manager instead. We use [pyenv](https://github.com/pyenv/pyenv) for this purpose, and the project includes a `.python-version` file.
+We assume that you are working on macOS, which comes with Python already installed. However, that Python is almost certainly outdated, and should not be updated directly. You may want to avoid using that Python, and install a Python version manager instead. We use [pyenv](https://github.com/pyenv/pyenv) for this purpose, and the project includes a `.python-version` file.
 
 Don't worry, pyenv will allow you to switch to your system-installed Python version at any time, so if you've already got a bunch of packages installed globally (:grimacing:), you should be able to use them as normal.
 
 Next, we will install [virtualenv](https://virtualenv.pypa.io/en/stable/). Most Python installations come with the [pip](https://pip.pypa.io/en/stable/) package manager. It does the job fine, but it sucks at managing dependencies on a per-project basis. Whenever you install a package with pip, you are installing it globally for that Python version. This can cause all sort of cross-project conflicts.
 
-Virtualenv aims to solve this problem by allowing you to create a sandboxed environment for each Python project. When you activate an environment, any package installations will be directed to that project's sandbox. No more
-version conflicts.
+Virtualenv aims to solve this problem by allowing you to create a sandboxed environment for each Python project. When you activate an environment, any package installations will be directed to that project's sandbox. No more version conflicts.
 
 ### Pyenv
 

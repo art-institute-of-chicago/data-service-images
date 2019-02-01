@@ -35,7 +35,7 @@ for row in reader:
     if not os.path.isfile(jpg):
         continue
 
-    ahash, phash, dhash, whash = get_image_fingerprint(jpg)
+    ahash, phash, dhash, whash = get_image_fingerprint(jpg, row)
 
     out = {
     	'id': row['id'],
