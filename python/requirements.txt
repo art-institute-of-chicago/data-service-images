@@ -1,0 +1,5 @@
+# requirements.txt should contain only top-level requirements
+# Update it manually: http://www.jfabre.com/how-not-to-to-pip-requirements/
+# requirements.lock should be generated with pip freeze
+Pillow==5.2.*
+ImageHash==4.0

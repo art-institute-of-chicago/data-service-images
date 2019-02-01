@@ -13,72 +13,33 @@ class PythonImport extends AbstractCommand
 
     protected $description = 'Import CSV for image metadata';
 
-    protected $filename = 'images.csv';
-
     public function handle()
     {
+        $path = storage_path() . '/app/python-output.csv';
 
-        ini_set("memory_limit", "-1");
-
-        $path = storage_path() . '/app/' . $this->filename;
-
-        $csv = Reader::createFromPath( $path, 'r' );
+        $csv = Reader::createFromPath($path, 'r');
         $csv->setHeaderOffset(0);
 
-        foreach( $csv->getRecords() as $row )
+        foreach ($csv->getRecords() as $row)
         {
+            $image = Image::find($row['id']);
 
-            // Save to Image metadata
-            $image = Image::find( $row['id'] );
-
-            // Image not found
             if( !$image ) {
+                $this->info("{$row['id']} - not found");
                 continue;
             }
 
-            // TODO: Potential items from the Python implementation:
-            // $image->fingerprint = $this->getFingerprint( $image, $row );
-            // $image->mse = $row['mse'] ?? null;
-
-            // For now, just export the dominant color:
-            $image->color = $this->getColor( $image, $row );
+            // https://github.com/JohannesBuchner/imagehash
+            !empty($row['ahash']) && $image->ahash = $row['ahash'];
+            !empty($row['dhash']) && $image->dhash = $row['dhash'];
+            !empty($row['phash']) && $image->phash = $row['phash'];
+            !empty($row['whash']) && $image->whash = $row['whash'];
 
             $image->save();
 
             // Output for reference
-            $this->info( $image->getKey() . ' = ' . json_encode( $image->color ) );
-
+            $this->info("{$image->id} - updated");
         }
-
-    }
-
-    private function getColor( $image, $row )
-    {
-
-        $color = $image->color ?? (object) [];
-
-        $color->h = (int) $row['h'] ?? null;
-        $color->s = (int) $row['s'] ?? null;
-        $color->l = (int) $row['l'] ?? null;
-        $color->population = (int) $row['population'] ?? null;
-        $color->percentage = (float) $row['percentage'] ?? null;
-
-        return $color;
-
-    }
-
-    private function getFingerprint( $image, $row )
-    {
-
-        $fingerprint = $image->fingerprint ?? (object) [];
-
-        $fingerprint->ahash = $row['ahash'] ?? null;
-        $fingerprint->dhash = $row['dhash'] ?? null;
-        $fingerprint->phash = $row['phash'] ?? null;
-        $fingerprint->whash = $row['whash'] ?? null;
-
-        return $fingerprint;
-
     }
 
 }
