@@ -9,12 +9,16 @@ use Illuminate\Support\Facades\Storage;
 class ImageDownload extends AbstractCommand
 {
 
-    protected $signature = 'image:download {--all}';
+    protected $signature = 'image:download {--all} {--sleep= : Seconds to sleep between requests}';
 
     protected $description = 'Downloads all images from LAKE IIIF';
 
+    private $sleep;
+
     public function handle()
     {
+        $this->sleep = is_numeric($this->option('sleep')) ? floatval($this->option('sleep')) : 0.5;
+
         $images = $this->option('all') ? Image::query() : Image::whereNull('image_attempted_at');
 
         if (!$this->confirm($images->count() . ' images will be downloaded. Proceed?'))
@@ -49,7 +53,7 @@ class ImageDownload extends AbstractCommand
                 // Give the IIIF server a rest
                 if (!in_array('X-Cache: Hit from cloudfront', $headers))
                 {
-                    usleep(500000); // Half a second
+                    usleep($this->sleep * 1000000);
                 }
             }
             catch (\Exception $e)

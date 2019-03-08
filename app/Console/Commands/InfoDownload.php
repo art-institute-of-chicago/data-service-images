@@ -9,12 +9,16 @@ use Illuminate\Support\Facades\Storage;
 class InfoDownload extends AbstractCommand
 {
 
-    protected $signature = 'info:download {--all}';
+    protected $signature = 'info:download {--all} {--sleep= : Seconds to sleep between requests}';
 
     protected $description = 'Downloads info.json files from IIIF';
 
+    private $sleep;
+
     public function handle()
     {
+        $this->sleep = is_numeric($this->option('sleep')) ? floatval($this->option('sleep')) : 0.5;
+
         $images = Image::query();
 
         if (!$this->option('all'))
@@ -60,7 +64,7 @@ class InfoDownload extends AbstractCommand
                 // Give the IIIF server a rest
                 if (!in_array('X-Cache: Hit from cloudfront', $headers))
                 {
-                    usleep(500000); // Half a second
+                    usleep($this->sleep * 1000000);
                 }
             }
             catch (\Exception $e)
