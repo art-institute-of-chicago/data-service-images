@@ -9,19 +9,24 @@ use Illuminate\Support\Facades\Storage;
 class InfoDownload extends AbstractCommand
 {
 
-    protected $signature = 'info:download';
+    protected $signature = 'info:download {--all}';
 
     protected $description = 'Downloads info.json files from IIIF';
 
     public function handle()
     {
-        // Only target images that haven't been attempted yet
-        $images = Image::whereNull('info_attempted_at');
+        $images = Image::query();
 
-        // Only target images that don't have dimensions yet
-        $images = $images->where(function($query) {
-            $query->whereNull('width')->orWhereNull('height');
-        });
+        if (!$this->option('all'))
+        {
+            // Only target images that haven't been attempted yet
+            $images = $images->whereNull('info_attempted_at');
+
+            // Only target images that don't have dimensions yet
+            $images = $images->where(function($query) {
+                $query->whereNull('width')->orWhereNull('height');
+            });
+        }
 
         if (!$this->confirm($images->count() . ' info files will be downloaded. Proceed?'))
         {
@@ -33,7 +38,7 @@ class InfoDownload extends AbstractCommand
             $file = "info/{$image->id}.json";
             $url = env('IIIF_URL') . "/{$image->id}/info.json";
 
-            if (Storage::exists($file))
+            if (!$this->option('all') && Storage::exists($file))
             {
                 $this->warn("{$image->id} - already exists");
                 continue;

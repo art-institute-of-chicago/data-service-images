@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Storage;
 class ImageDownload extends AbstractCommand
 {
 
-    protected $signature = 'image:download';
+    protected $signature = 'image:download {--all}';
 
     protected $description = 'Downloads all images from LAKE IIIF';
 
     public function handle()
     {
-        $images = Image::whereNull('image_attempted_at');
+        $images = $this->option('all') ? Image::query() : Image::whereNull('image_attempted_at');
 
         if (!$this->confirm($images->count() . ' images will be downloaded. Proceed?'))
         {
@@ -27,7 +27,7 @@ class ImageDownload extends AbstractCommand
             $file = "images/{$image->id}.jpg";
             $url = env('IIIF_URL') . "/{$image->id}/full/843,/0/default.jpg";
 
-            if (Storage::exists($file))
+            if (!$this->option('all') && Storage::exists($file))
             {
                 $this->warn("{$image->id} - already exists");
                 continue;

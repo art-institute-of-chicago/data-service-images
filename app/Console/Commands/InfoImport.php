@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class InfoImport extends AbstractCommand
 {
 
-    protected $signature = 'info:import';
+    protected $signature = 'info:import {--all}';
 
     protected $description = 'Imports info.json files downloaded from IIIF';
 
@@ -18,10 +18,18 @@ class InfoImport extends AbstractCommand
         // Only target images whose info.json have been downloaded
         $images = Image::whereNotNull('info_downloaded_at');
 
-        // Only target images that don't have dimensions yet
-        $images = $images->where(function($query) {
-            $query->whereNull('width')->orWhereNull('height');
-        });
+        if (!$this->option('all'))
+        {
+            // Only target images that don't have dimensions yet
+            $images = $images->where(function($query) {
+                $query->whereNull('width')->orWhereNull('height');
+            });
+        }
+
+        if (!$this->confirm($images->count() . ' info files will be imported. Proceed?'))
+        {
+            return;
+        }
 
         foreach ($images->cursor(['id']) as $image)
         {
