@@ -28,6 +28,8 @@ class ApiImport extends AbstractCommand
                 'height',
                 'lqip',
                 'color',
+                'content_e_tag',
+                'content_modified_at',
             ]),
         ]));
 
@@ -46,6 +48,14 @@ class ApiImport extends AbstractCommand
 
             // Encode any stdClass to strings
             $data = array_map(function($datum) {
+
+                // TODO: Implement actual inbound transformer?
+                $datum->file_e_tag = $datum->content_e_tag ?? null;
+                $datum->file_modified_at = $this->getDate($datum->content_modified_at ?? null);
+
+                unset($datum->content_e_tag);
+                unset($datum->content_modified_at);
+
                 return array_map(function($value) {
                     return is_object($value) ? json_encode($value) : $value;
                 }, (array) $datum);
@@ -65,5 +75,10 @@ class ApiImport extends AbstractCommand
     protected function query($page, $limit)
     {
         return json_decode($this->fetch(sprintf($this->urlFormat, $page, $limit)));
+    }
+
+    protected function getDate($value)
+    {
+        return isset($value) ? date('Y-m-d H:i:s', strtotime($value)) : null;
     }
 }
