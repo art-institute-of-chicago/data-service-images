@@ -83,6 +83,7 @@ class MySqlGrammar extends Grammar
      * Compile an insert update statement into SQL.
      *
      * @link https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html
+     * @link https://gist.github.com/RuGa/5354e44883c7651fd15c
      *
      * @param  \App\Library\Database\Query\MySqlBuilder  $query
      * @param  array  $values
@@ -95,18 +96,18 @@ class MySqlGrammar extends Grammar
         // basic routine regardless of an amount of records given to us to insert.
         $table = $this->wrapTable($query->from);
 
-        // Each one of the columns in the update statements needs to be wrapped in the
-        // keyword identifiers, also a place-holder needs to be created for each of
-        // the values in the list of bindings so we can make the sets statements.
-        $columns = [];
+        $columnNames = array_keys(reset($values));
 
-        $values = reset($values);
+        $columns = $this->columnize($columnNames);
 
-        foreach ($values as $key => $value) {
-            $columns[] = $this->wrap($key).' = '.$this->parameter($value);
-        }
-        $columns = implode(', ', $columns);
+        $parameters = implode(',', array_map(function ($row) {
+            return '(' . $this->parameterize($row) . ')';
+        }, $values));
 
-        return "insert into $table set $columns ON DUPLICATE KEY UPDATE $columns";
+        $updates = implode(',', array_map(function ($columnName) {
+            return $this->wrap($columnName) . ' = VALUES(' . $this->wrap($columnName) . ')';
+        }, $columnNames ));
+
+        return "INSERT INTO $table ($columns) VALUES $parameters ON DUPLICATE KEY UPDATE $updates";
     }
 }

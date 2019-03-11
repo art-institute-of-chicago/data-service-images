@@ -63,7 +63,7 @@ class ApiImport extends AbstractCommand
 
             // https://gist.github.com/VinceG/0fb570925748ab35bc53f2a798cb517c
             // insertUpdate needs more work to be suitable for batch use
-            DB::table('images')->insertIgnore($data);
+            DB::table('images')->insertUpdate($data);
 
             $bar->advance(count($data));
         }

@@ -75,9 +75,7 @@ class MySqlBuilder extends QueryBuilder
             $values = [$values];
         }
 
-        // Since every insert gets treated like a batch insert, we will make sure the
-        // bindings are structured in a way that is convenient for building these
-        // inserts statements by verifying the elements are actually an array.
+        // Sort the keys in each row alphabetically for consistency
         else {
             foreach ($values as $key => $value) {
                 ksort($value);
@@ -103,7 +101,7 @@ class MySqlBuilder extends QueryBuilder
         // is the same type of result returned by the raw connection instance.
         $bindings = $this->cleanBindings($bindings);
 
-        return $this->connection->insert($sql, array_merge($bindings, $bindings));
+        return $this->connection->insert($sql, $bindings);
     }
 
     /**
