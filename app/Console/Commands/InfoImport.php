@@ -15,6 +15,9 @@ class InfoImport extends AbstractCommand
 
     public function handle()
     {
+        // Our servers are struggling with this just a bit
+        ini_set('memory_limit', '-1');
+
         // Only target images whose info.json have been downloaded
         $images = Image::whereNotNull('info_downloaded_at');
 
