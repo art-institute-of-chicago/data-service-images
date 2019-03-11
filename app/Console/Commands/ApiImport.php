@@ -46,16 +46,29 @@ class ApiImport extends AbstractCommand
         {
             $json = $this->query($currentPage, $this->chunkSize);
 
-            // Encode any stdClass to strings
+            // TODO: Implement actual inbound transformer?
             $data = array_map(function($datum) {
 
-                // TODO: Implement actual inbound transformer?
+                // Rename `content` fields to `file`
                 $datum->file_e_tag = $datum->content_e_tag ?? null;
                 $datum->file_modified_at = $this->getDate($datum->content_modified_at ?? null);
 
                 unset($datum->content_e_tag);
                 unset($datum->content_modified_at);
 
+                // Unset `null` fields for which this service is the authority
+                foreach ([
+                    'width',
+                    'height',
+                    'lqip',
+                    'color',
+                ] as $field) {
+                    if (!isset($datum->$field)) {
+                        unset($datum->$field);
+                    }
+                }
+
+                // Encode any stdClass to strings
                 return array_map(function($value) {
                     return is_object($value) ? json_encode($value) : $value;
                 }, (array) $datum);
