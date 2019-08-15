@@ -33,6 +33,12 @@ class ImageTransformer extends AbstractTransformer
             'file_e_tag' => $image->file_e_tag,
             'file_modified_at' => $this->getDateValue($image, 'file_modified_at'),
 
+            // Import metadata
+            'info_attempted_at' => $this->getDateValue($image, 'info_attempted_at'),
+            'info_downloaded_at' => $this->getDateValue($image, 'info_downloaded_at'),
+            'image_attempted_at' => $this->getDateValue($image, 'image_attempted_at'),
+            'image_downloaded_at' => $this->getDateValue($image, 'image_downloaded_at'),
+
             // Record metadata
             'created_at' => $this->getDateValue($image, 'updated_at'),
             'modified_at' => $this->getDateValue($image, 'created_at'),
