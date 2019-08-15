@@ -45,7 +45,14 @@ class ImageTransformer extends AbstractTransformer
 
     private function getDateValue($image, $fieldName)
     {
-        return $image->{$fieldName} ? $image->{$fieldName}->toIso8601String() : null;
+        if (!isset($image->{$fieldName})) {
+            return null;
+        }
+
+        $date = $image->{$fieldName};
+        $date->setTimezone('America/Chicago');
+
+        return $date->toIso8601String();
     }
 
 }

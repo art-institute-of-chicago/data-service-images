@@ -13,7 +13,9 @@ class AddImages extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->text('title')->nullable();
-            $table->timestamps();
+
+            $table->datetime('created_at')->nullable()->index();
+            $table->datetime('updated_at')->nullable()->index();
         });
 
     }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ApiImport extends AbstractCommand
@@ -81,6 +82,13 @@ class ApiImport extends AbstractCommand
 
     protected function getDate($value)
     {
-        return isset($value) ? date('Y-m-d H:i:s', strtotime($value)) : null;
+        if (!isset($value)) {
+            return null;
+        }
+
+        $date = Carbon::parse($value);
+        $date->setTimezone('UTC');
+
+        return $date->format('Y-m-d H:i:s');
     }
 }

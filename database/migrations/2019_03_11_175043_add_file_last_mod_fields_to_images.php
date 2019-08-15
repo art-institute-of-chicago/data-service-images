@@ -12,7 +12,7 @@ class AddFileLastModFieldsToImages extends Migration
 
         Schema::table('images', function (Blueprint $table) {
             $table->string('file_e_tag', 40)->nullable()->after('whash');
-            $table->timestamp('file_modified_at')->nullable()->after('file_e_tag');
+            $table->datetime('file_modified_at')->nullable()->index()->after('file_e_tag');
         });
 
     }
