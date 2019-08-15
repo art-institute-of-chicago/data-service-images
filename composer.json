@@ -17,7 +17,8 @@
         "laravel/tinker": "^1.0",
         "marijnvdwerf/material-palette": "^1.2",
         "league/csv": "^9.1",
-        "doctrine/dbal": "^2.9"
+        "doctrine/dbal": "^2.9",
+        "sentry/sentry-laravel": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
