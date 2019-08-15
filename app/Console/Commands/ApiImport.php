@@ -24,10 +24,6 @@ class ApiImport extends AbstractCommand
             'fields' => implode(',', [
                 'id',
                 'title',
-                'width',
-                'height',
-                'lqip',
-                'color',
                 'content_e_tag',
                 'content_modified_at',
             ]),
@@ -55,18 +51,6 @@ class ApiImport extends AbstractCommand
 
                 unset($datum->content_e_tag);
                 unset($datum->content_modified_at);
-
-                // Unset `null` fields for which this service is the authority
-                foreach ([
-                    'width',
-                    'height',
-                    'lqip',
-                    'color',
-                ] as $field) {
-                    if (!isset($datum->$field)) {
-                        unset($datum->$field);
-                    }
-                }
 
                 // Encode any stdClass to strings
                 return array_map(function($value) {
