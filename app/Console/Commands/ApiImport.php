@@ -42,8 +42,13 @@ class ApiImport extends AbstractCommand
         {
             $json = $this->query($currentPage, $this->chunkSize);
 
+            $now = date('Y-m-d H:i:s');
+
             // TODO: Implement actual inbound transformer?
-            $data = array_map(function($datum) {
+            $data = array_map(function($datum) use ($now) {
+                // Manually append timestamps
+                $datum->created_at = $now;
+                $datum->updated_at = $now;
 
                 // Rename `content` fields to `file`
                 $datum->file_e_tag = $datum->content_e_tag ?? null;

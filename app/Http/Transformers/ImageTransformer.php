@@ -32,6 +32,10 @@ class ImageTransformer extends AbstractTransformer
             // File metadata
             'file_e_tag' => $image->file_e_tag,
             'file_modified_at' => $this->getDateValue($image, 'file_modified_at'),
+
+            // Record metadata
+            'created_at' => $this->getDateValue($image, 'updated_at'),
+            'modified_at' => $this->getDateValue($image, 'created_at'),
         ];
 
         // Enables ?fields= functionality
