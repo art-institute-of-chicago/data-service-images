@@ -28,7 +28,7 @@ return [
         /*
          * Override default Laravel Service Providers...
          */
-        App\Providers\DatabaseServiceProvider::class,
+        Aic\Hub\Foundation\DatabaseServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
