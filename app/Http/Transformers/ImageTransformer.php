@@ -28,11 +28,20 @@ class ImageTransformer extends AbstractTransformer
             // From artisan commands
             'lqip' => $image->lqip,
             'color' => $image->color,
+
+            // File metadata
+            'file_e_tag' => $image->file_e_tag,
+            'file_modified_at' => $this->getDateValue($image, 'file_modified_at'),
         ];
 
         // Enables ?fields= functionality
         return parent::transform($data);
 
+    }
+
+    private function getDateValue($image, $fieldName)
+    {
+        return $image->{$fieldName} ? $image->{$fieldName}->toIso8601String() : null;
     }
 
 }

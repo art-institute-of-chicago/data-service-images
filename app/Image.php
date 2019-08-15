@@ -9,6 +9,7 @@ class Image extends BaseModel
 
     protected $casts = [
         'color' => 'object',
+        'file_modified_at' => 'datetime',
         'info_attempted_at' => 'date',
         'info_downloaded_at' => 'date',
         'image_attempted_at' => 'date',
