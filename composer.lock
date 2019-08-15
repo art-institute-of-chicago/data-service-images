@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0730f5fa02633d4d15a0e7e7ebb22ad6",
+    "content-hash": "093a747295b2394b56972fa834ae91c1",
     "packages": [
         {
             "name": "aic/data-hub-foundation",
@@ -12,18 +12,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/art-institute-of-chicago/data-hub-foundation.git",
-                "reference": "0de88f9eaa96cfd564bad076cd31f21eccac724d"
+                "reference": "ef2e5f5642bc587f0d71aecf834ba43c1d6e8a4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/art-institute-of-chicago/data-hub-foundation/zipball/0de88f9eaa96cfd564bad076cd31f21eccac724d",
-                "reference": "0de88f9eaa96cfd564bad076cd31f21eccac724d",
+                "url": "https://api.github.com/repos/art-institute-of-chicago/data-hub-foundation/zipball/ef2e5f5642bc587f0d71aecf834ba43c1d6e8a4a",
+                "reference": "ef2e5f5642bc587f0d71aecf834ba43c1d6e8a4a",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^5.4",
+                "doctrine/dbal": "^2.6",
+                "laravel/framework": "5.8.*",
                 "league/fractal": "^0.16.0",
-                "php": ">=7.0.0"
+                "php": ">=7.1.3"
             },
             "type": "library",
             "autoload": {
@@ -49,7 +50,7 @@
                 "source": "https://github.com/art-institute-of-chicago/data-hub-foundation/tree/master",
                 "issues": "https://github.com/art-institute-of-chicago/data-hub-foundation/issues"
             },
-            "time": "2018-03-07 22:53:21"
+            "time": "2019-07-10T18:35:10+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -4081,6 +4082,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2017-06-30T09:13:00+00:00"
         },
         {
