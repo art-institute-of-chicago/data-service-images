@@ -17,6 +17,8 @@ class Image extends BaseModel
         'info_downloaded_at' => 'datetime',
         'image_attempted_at' => 'datetime',
         'image_downloaded_at' => 'datetime',
+        'image_cache_hit' => 'boolean',
+        'info_cache_hit' => 'boolean',
     ];
 
     /**

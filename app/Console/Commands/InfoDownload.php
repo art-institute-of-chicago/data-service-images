@@ -9,16 +9,14 @@ use Illuminate\Support\Facades\Storage;
 class InfoDownload extends AbstractCommand
 {
 
-    protected $signature = 'info:download {--all} {--sleep= : Seconds to sleep between requests}';
+    protected $signature = 'info:download {--all}';
 
     protected $description = 'Downloads info.json files from IIIF';
 
-    private $sleep;
+    private $sleep = 0;
 
     public function handle()
     {
-        $this->sleep = is_numeric($this->option('sleep')) ? floatval($this->option('sleep')) : 0.5;
-
         $images = Image::query();
 
         if (!$this->option('all'))
@@ -57,12 +55,13 @@ class InfoDownload extends AbstractCommand
                 Storage::put($file, $contents);
 
                 $image->info_downloaded_at = Carbon::now();
+                $image->info_cache_hit = in_array('X-Cache: Hit from cloudfront', $headers);
                 $image->save();
 
                 $this->info("{$image->id} - downloaded");
 
                 // Give the IIIF server a rest
-                if (!in_array('X-Cache: Hit from cloudfront', $headers))
+                if (!$image->info_cache_hit)
                 {
                     usleep($this->sleep * 1000000);
                 }
