@@ -21,8 +21,8 @@ class InfoDownload extends AbstractCommand
 
         if (!$this->option('all'))
         {
-            // Only target images that haven't been attempted yet
-            $images = $images->whereNull('info_attempted_at');
+            // Only target images that haven't been downloaded yet
+            $images = $images->whereNull('info_downloaded_at');
 
             // Only target images that don't have dimensions yet
             $images = $images->where(function($query) {

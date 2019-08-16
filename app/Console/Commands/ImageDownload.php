@@ -17,7 +17,8 @@ class ImageDownload extends AbstractCommand
 
     public function handle()
     {
-        $images = $this->option('all') ? Image::query() : Image::whereNull('image_attempted_at');
+        // Only get images that haven't been downloaded yet
+        $images = $this->option('all') ? Image::query() : Image::whereNull('image_downloaded_at');
 
         if (!$this->confirm($images->count() . ' images will be downloaded. Proceed?'))
         {
