@@ -27,6 +27,8 @@ class ApiImport extends AbstractCommand
                 'title',
                 'content_e_tag',
                 'content_modified_at',
+                'last_updated_source',
+                'last_updated',
             ]),
         ]));
 
@@ -57,6 +59,14 @@ class ApiImport extends AbstractCommand
 
                 unset($datum->content_e_tag);
                 unset($datum->content_modified_at);
+
+                // Set api-related timestamps
+                $datum->dams_modified_at = $this->getDate($datum->last_updated_source ?? null);
+                $datum->api_modified_at = $this->getDate($datum->last_updated ?? null);
+                $datum->api_imported_at = $now;
+
+                unset($datum->last_updated_source);
+                unset($datum->last_updated);
 
                 // Encode any stdClass to strings
                 return array_map(function($value) {
