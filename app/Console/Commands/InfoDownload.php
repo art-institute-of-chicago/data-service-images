@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class InfoDownload extends AbstractCommand
 {
 
-    protected $signature = 'info:download {--all}';
+    protected $signature = 'info:download {--all} {--skip-existing}';
 
     protected $description = 'Downloads info.json files from IIIF';
 
@@ -17,18 +17,7 @@ class InfoDownload extends AbstractCommand
 
     public function handle()
     {
-        $images = Image::query();
-
-        if (!$this->option('all'))
-        {
-            // Only target images that haven't been downloaded yet
-            $images = $images->whereNull('info_downloaded_at');
-
-            // Only target images that don't have dimensions yet
-            $images = $images->where(function($query) {
-                $query->whereNull('width')->orWhereNull('height');
-            });
-        }
+        $images = $this->option('all') ? Image::query() : $images = Image::whereNull('info_downloaded_at');
 
         if (!$this->confirm($images->count() . ' info files will be downloaded. Proceed?'))
         {
@@ -40,10 +29,22 @@ class InfoDownload extends AbstractCommand
             $file = "info/{$image->id}.json";
             $url = env('IIIF_URL') . "/{$image->id}/info.json";
 
-            if (!$this->option('all') && Storage::exists($file))
+            if (Storage::exists($file))
             {
-                $this->warn("{$image->id} - already exists");
-                continue;
+                if ($this->option('skip-existing'))
+                {
+                    $this->warn("{$image->id} - already exists – skipping!");
+                    continue;
+                }
+
+                $image->info_attempted_at = null;
+                $image->info_downloaded_at = null;
+                $image->info_cache_hit = null;
+                $image->save();
+
+                Storage::delete($file);
+
+                $this->warn("{$image->id} - already exists – removed!");
             }
 
             $image->info_attempted_at = Carbon::now();
