@@ -45,7 +45,7 @@ class ImageDownload extends AbstractCommand
                 Storage::put($file, $contents);
 
                 $image->image_downloaded_at = Carbon::now();
-                $image->image_cache_hit = in_array('X-Cache: Hit from cloudfront', $headers);
+                $image->image_cache_hit = in_array('x-cache: hit from cloudfront', array_map('strtolower', $headers));
                 $image->save();
 
                 $this->info("{$image->id} - downloaded");
