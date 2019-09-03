@@ -36,7 +36,7 @@ class ImageLqip extends AbstractCommand
             }
 
             // Generate an Imagemagick command
-            $cmd = sprintf('convert "%s" -resize x5 inline:gif:-', $source);
+            $cmd = sprintf('convert "%s" -resize x5 gif:- | base64 --wrap 0', $source);
 
             // Run the command and grab its output
             $lqip = exec($cmd);
@@ -53,6 +53,9 @@ class ImageLqip extends AbstractCommand
 
             // Remove R0lGODlh (GIF magic number)
             // $lqip = substr( $lqip, 8 );
+
+            // Prepend data:image/gif;base64,
+            $lqip = 'data:image/gif;base64,' . $lqip;
 
             // Save the LQIP to database
             $image->lqip = $lqip;
