@@ -90,7 +90,41 @@ You will need to run `source env/bin/activate` each time you work with this proj
 Finally, install the project's package requirements:
 
 ```bash
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 You should be ready to use the tool.
+
+### Adding Dependencies
+
+To add libraries, you should modify `requirements.txt` manually, then freeze the subrequirements into `requirements.lock` First, do this to find out the available versions for a package:
+
+```
+pip install matplotlib==
+```
+
+Then specify the version you want in `requirements.txt`:
+
+```
+matplotlib==3.1.1
+```
+
+Then run pip install:
+
+```
+pip install -r requirements.txt
+```
+
+Finally, freeze the requirements:
+
+```
+pip freeze -r requirements.txt > requirements.lock
+```
+
+Now, when you deploy, you can do this instead:
+
+```
+pip install -r requirements.lock
+```
+
+...and you'll have almost complete assurance that everything is exactly the same version as it was in your dev environment.

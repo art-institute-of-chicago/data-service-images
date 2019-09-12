@@ -6,7 +6,12 @@ ImageHash==4.0
 numpy==1.16.0
 opencv-python==4.0.0.21
 imutils==0.5.2
+matplotlib==3.1.1
 ## The following requirements were added by pip freeze:
+cycler==0.10.0
+kiwisolver==1.1.0
+pyparsing==2.4.2
+python-dateutil==2.8.0
 PyWavelets==1.0.1
 scipy==1.2.0
 six==1.12.0

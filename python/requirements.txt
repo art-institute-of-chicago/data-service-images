@@ -6,3 +6,4 @@ ImageHash==4.0
 numpy==1.16.0
 opencv-python==4.0.*
 imutils==0.5.2
+matplotlib==3.1.1
