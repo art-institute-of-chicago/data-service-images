@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd2125c65ffcfa21a1f7349658ae2321",
+    "content-hash": "09687e68b96cce3c3726c97fbea0d846",
     "packages": [
         {
             "name": "aic/data-hub-foundation",
