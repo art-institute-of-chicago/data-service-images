@@ -15,41 +15,7 @@ class MetaDates extends AbstractCommand
 
     public function handle()
     {
-        $this->setInfoFields();
         $this->setImageFields();
-    }
-
-    private function setInfoFields()
-    {
-        // Only target images whose info.json have not been downloaded
-        $images = Image::whereNull('info_attempted_at')->orWhereNull('info_downloaded_at');
-
-        foreach ($images->cursor(['id']) as $image)
-        {
-            $file = storage_path() . "/app/info/{$image->id}.json";
-
-            if (!file_exists($file))
-            {
-                $this->warn("{$image->id} - Info file not found");
-                continue;
-            }
-
-            // Get file modified time
-            $mtime = filemtime($file);
-
-            $image->info_downloaded_at = $mtime;
-
-            if (!isset($image->info_attempted_at))
-            {
-                $image->info_attempted_at = $mtime;
-            }
-
-            $image->save();
-
-            $this->info("{$image->id} - Info dates updated");
-        }
-
-        $this->info($images->count() . ' image records processed.');
     }
 
     private function setImageFields()

@@ -35,14 +35,11 @@ class ImageTransformer extends AbstractTransformer
             'api_imported_at' => $this->getDateValue($image, 'api_imported_at'),
 
             // Import metadata
-            'info_attempted_at' => $this->getDateValue($image, 'info_attempted_at'),
-            'info_downloaded_at' => $this->getDateValue($image, 'info_downloaded_at'),
             'image_attempted_at' => $this->getDateValue($image, 'image_attempted_at'),
             'image_downloaded_at' => $this->getDateValue($image, 'image_downloaded_at'),
 
             // Cache hit metadata
             'image_cache_hit' => $image->image_cache_hit,
-            'info_cache_hit' => $image->info_cache_hit,
 
             // Record metadata
             'created_at' => $this->getDateValue($image, 'updated_at'),

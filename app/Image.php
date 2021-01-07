@@ -13,12 +13,9 @@ class Image extends BaseModel
         'dams_modified_at' => 'datetime',
         'api_modified_at' => 'datetime',
         'api_imported_at' => 'datetime',
-        'info_attempted_at' => 'datetime',
-        'info_downloaded_at' => 'datetime',
         'image_attempted_at' => 'datetime',
         'image_downloaded_at' => 'datetime',
         'image_cache_hit' => 'boolean',
-        'info_cache_hit' => 'boolean',
     ];
 
     /**
