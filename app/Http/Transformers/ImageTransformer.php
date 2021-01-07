@@ -14,10 +14,6 @@ class ImageTransformer extends AbstractTransformer
             'id' => $image->id,
             'title' => $image->title,
 
-            // From info.json
-            'width' => $image->width,
-            'height' => $image->height,
-
             // From Python subservice
             'ahash' => $image->ahash,
             'phash' => $image->phash,
